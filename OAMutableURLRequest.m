@@ -34,7 +34,22 @@
 @end
 
 @implementation OAMutableURLRequest
-@synthesize signature, nonce;
+@synthesize nonce;
+@synthesize token;
+@synthesize realm;
+@synthesize signatureProvider;
+@synthesize timestamp;
+
+
+- (void)dealloc {
+	self.token = nil;
+	self.realm = nil;
+	self.signatureProvider = nil;
+	self.timestamp = nil;
+	[nonce release];
+
+	[super dealloc];
+}
 
 #pragma mark init
 
@@ -51,22 +66,22 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider {
     
     // empty token for Unauthorized Request Token transaction
     if (aToken == nil) {
-        token = [[OAToken alloc] init];
+        self.token = [[[OAToken alloc] init] autorelease];
     } else {
-        token = aToken;
+        self.token = aToken;
     }
     
     if (aRealm == nil) {
-        realm = @"";
+        self.realm = @"";
     } else {
-        realm = [aRealm copy];
+        self.realm = aRealm;
     }
       
     // default to HMAC-SHA1
     if (aProvider == nil) {
-        signatureProvider = [[OAHMAC_SHA1SignatureProvider alloc] init];
+        self.signatureProvider = [[[OAHMAC_SHA1SignatureProvider alloc] init] autorelease];
     } else {
-        signatureProvider = [aProvider retain];
+        self.signatureProvider = aProvider;
     }
     
     [self _generateTimestamp];
@@ -91,7 +106,7 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
     signatureProvider:aProvider];
     
     nonce = [aNonce copy];
-    timestamp = [aTimestamp copy];
+    self.timestamp = aTimestamp;
     
     return self;
 }
@@ -99,7 +114,7 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
 - (void)prepare {
     // sign
 //	NSLog(@"Base string is: %@", [self _signatureBaseString]);
-   signature = [signatureProvider signClearText:[self _signatureBaseString]
+   NSString* signature = [signatureProvider signClearText:[self _signatureBaseString]
                                       withSecret:[NSString stringWithFormat:@"%@&%@",
                                                   consumer.secret,
                                                   token.secret ? token.secret : @""]];
@@ -127,14 +142,14 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
 }
 
 - (void)_generateTimestamp {
-    timestamp = [[NSString stringWithFormat:@"%d", time(NULL)] retain];
+    self.timestamp = [NSString stringWithFormat:@"%d", time(NULL)]; 
 }
 
 - (void)_generateNonce {
     CFUUIDRef theUUID = CFUUIDCreate(NULL);
     CFStringRef string = CFUUIDCreateString(NULL, theUUID);
     NSMakeCollectable(theUUID);
-    nonce = (NSString *)string;
+    nonce = [(NSString *)string copy];
 }
 
 - (NSString *)_signatureBaseString {
