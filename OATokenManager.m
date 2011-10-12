@@ -282,7 +282,7 @@
 - (void)accessTokenReceived:(OACall *)call body:(NSString *)body
 {
 	OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:body];
-	[self setAccessToken:token];
+	[self setAccessToken:[token autorelease]];
 }
 
 - (void)renewToken {
