@@ -39,7 +39,7 @@
 
 @implementation OAToken
 
-@synthesize key, secret, session, duration, attributes, forRenewal;
+@synthesize key, secret, session, duration, attributes, forRenewal, verifier;
 
 #pragma mark init
 
@@ -128,6 +128,7 @@
     self.secret = nil;
     self.duration = nil;
     self.attributes = nil;
+    self.verifier = nil;
 	[super dealloc];
 }
 
@@ -227,6 +228,11 @@
 			[params setObject:[self attributeString] forKey:@"oauth_token_attributes"];
 		}
 	}
+
+	if (self.verifier) {
+		[params setObject:self.verifier forKey:@"oauth_verifier"];
+	}
+
 	return params;
 }
 
