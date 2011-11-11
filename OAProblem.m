@@ -25,8 +25,9 @@ const NSString *token_not_renewable = @"token_not_renewable";
 
 - (id)initWithPointer:(const NSString *) aPointer
 {
-	[super init];
-	problem = aPointer;
+	if (self = [super init]) {
+		problem = aPointer;
+	}
 	return self;
 }
 

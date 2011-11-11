@@ -58,34 +58,35 @@
 			token:(OAToken *)aToken
             realm:(NSString *)aRealm
 signatureProvider:(id<OASignatureProviding, NSObject>)aProvider {
-    [super initWithURL:aUrl
+    if (self = [super initWithURL:aUrl
            cachePolicy:NSURLRequestReloadIgnoringCacheData
-       timeoutInterval:10.0];
+		   timeoutInterval:10.0]) {
     
-    consumer = aConsumer;
-    
-    // empty token for Unauthorized Request Token transaction
-    if (aToken == nil) {
-        self.token = [[[OAToken alloc] init] autorelease];
-    } else {
-        self.token = aToken;
-    }
-    
-    if (aRealm == nil) {
-        self.realm = @"";
-    } else {
-        self.realm = aRealm;
-    }
-      
-    // default to HMAC-SHA1
-    if (aProvider == nil) {
-        self.signatureProvider = [[[OAHMAC_SHA1SignatureProvider alloc] init] autorelease];
-    } else {
-        self.signatureProvider = aProvider;
-    }
-    
-    [self _generateTimestamp];
-    [self _generateNonce];
+		consumer = aConsumer;
+		
+		// empty token for Unauthorized Request Token transaction
+		if (aToken == nil) {
+			self.token = [[[OAToken alloc] init] autorelease];
+		} else {
+			self.token = aToken;
+		}
+		
+		if (aRealm == nil) {
+			self.realm = @"";
+		} else {
+			self.realm = aRealm;
+		}
+		  
+		// default to HMAC-SHA1
+		if (aProvider == nil) {
+			self.signatureProvider = [[[OAHMAC_SHA1SignatureProvider alloc] init] autorelease];
+		} else {
+			self.signatureProvider = aProvider;
+		}
+		
+		[self _generateTimestamp];
+		[self _generateNonce];
+	}
     
     return self;
 }
@@ -99,14 +100,15 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider {
 signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
             nonce:(NSString *)aNonce
         timestamp:(NSString *)aTimestamp {
-    [self initWithURL:aUrl
+    if (self = [self initWithURL:aUrl
              consumer:aConsumer
                 token:aToken
                 realm:aRealm
-    signatureProvider:aProvider];
+			   signatureProvider:aProvider]) {
     
-    nonce = [aNonce copy];
-    self.timestamp = aTimestamp;
+		nonce = [aNonce copy];
+		self.timestamp = aTimestamp;
+	}
     
     return self;
 }
