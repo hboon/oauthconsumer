@@ -123,7 +123,7 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
     
     // set OAuth headers
 	NSMutableArray *chunks = [[NSMutableArray alloc] init];
-	[chunks addObject:[NSString stringWithFormat:@"realm=\"%@\"", [realm encodedURLParameterString]]];
+	//[chunks addObject:[NSString stringWithFormat:@"realm=\"%@\"", [realm encodedURLParameterString]]];
 	[chunks addObject:[NSString stringWithFormat:@"oauth_consumer_key=\"%@\"", [consumer.key encodedURLParameterString]]];
 
 	NSDictionary *tokenParameters = [token parameters];
