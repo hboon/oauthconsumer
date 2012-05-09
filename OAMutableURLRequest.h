@@ -44,6 +44,7 @@
 }
 @property(readonly,retain) NSString *nonce;
 @property(nonatomic,retain) OAToken* token;
+@property(nonatomic,retain) OAConsumer* consumer;
 @property(nonatomic,retain) NSString* realm;
 @property(nonatomic,retain) id<OASignatureProviding> signatureProvider;
 @property(nonatomic,retain) NSString *timestamp;
