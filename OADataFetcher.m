@@ -41,6 +41,7 @@
 	[response release];
 	[responseData release];
 	[request release];
+	[delegate release];
 	[super dealloc];
 }
 
@@ -75,7 +76,7 @@
 
 - (void)fetchDataWithRequest:(OAMutableURLRequest *)aRequest delegate:(id)aDelegate didFinishSelector:(SEL)finishSelector didFailSelector:(SEL)failSelector {
 	request = [aRequest retain];
-    delegate = aDelegate;
+    delegate = [aDelegate retain];
     didFinishSelector = finishSelector;
     didFailSelector = failSelector;
     
