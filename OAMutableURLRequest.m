@@ -36,6 +36,7 @@
 @implementation OAMutableURLRequest
 @synthesize nonce;
 @synthesize token;
+@synthesize consumer;
 @synthesize realm;
 @synthesize signatureProvider;
 @synthesize timestamp;
@@ -43,11 +44,11 @@
 
 - (void)dealloc {
 	self.token = nil;
+	self.consumer = nil;
 	self.realm = nil;
 	self.signatureProvider = nil;
 	self.timestamp = nil;
 	[nonce release];
-	[consumer release];
 
 	[super dealloc];
 }
@@ -63,7 +64,7 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider {
            cachePolicy:NSURLRequestReloadIgnoringCacheData
 		   timeoutInterval:10.0]) {
     
-		consumer = [aConsumer retain];
+		self.consumer = aConsumer;
 		
 		// empty token for Unauthorized Request Token transaction
 		if (aToken == nil) {
@@ -119,13 +120,13 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
 //	NSLog(@"Base string is: %@", [self _signatureBaseString]);
    NSString* signature = [signatureProvider signClearText:[self _signatureBaseString]
                                       withSecret:[NSString stringWithFormat:@"%@&%@",
-                                                  consumer.secret,
+                                                  self.consumer.secret,
                                                   token.secret ? token.secret : @""]];
     
     // set OAuth headers
 	NSMutableArray *chunks = [[NSMutableArray alloc] init];
-	[chunks addObject:[NSString stringWithFormat:@"realm=\"%@\"", [realm encodedURLParameterString]]];
-	[chunks addObject:[NSString stringWithFormat:@"oauth_consumer_key=\"%@\"", [consumer.key encodedURLParameterString]]];
+	//[chunks addObject:[NSString stringWithFormat:@"realm=\"%@\"", [realm encodedURLParameterString]]];
+	[chunks addObject:[NSString stringWithFormat:@"oauth_consumer_key=\"%@\"", [self.consumer.key encodedURLParameterString]]];
 
 	NSDictionary *tokenParameters = [token parameters];
 	for (NSString *k in tokenParameters) {
@@ -163,7 +164,7 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
 	// 6 being the number of OAuth params in the Signature Base String
 	NSMutableArray *parameterPairs = [[NSMutableArray alloc] initWithCapacity:(5 + [[self parameters] count] + [tokenParameters count])];
     
-    [parameterPairs addObject:[[OARequestParameter requestParameter:@"oauth_consumer_key" value:consumer.key] URLEncodedNameValuePair]];
+    [parameterPairs addObject:[[OARequestParameter requestParameter:@"oauth_consumer_key" value:self.consumer.key] URLEncodedNameValuePair]];
     [parameterPairs addObject:[[OARequestParameter requestParameter:@"oauth_signature_method" value:[signatureProvider name]] URLEncodedNameValuePair]];
     [parameterPairs addObject:[[OARequestParameter requestParameter:@"oauth_timestamp" value:timestamp] URLEncodedNameValuePair]];
     [parameterPairs addObject:[[OARequestParameter requestParameter:@"oauth_nonce" value:nonce] URLEncodedNameValuePair]];
