@@ -47,6 +47,7 @@
 	self.signatureProvider = nil;
 	self.timestamp = nil;
 	[nonce release];
+	[consumer release];
 
 	[super dealloc];
 }
@@ -62,7 +63,7 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider {
            cachePolicy:NSURLRequestReloadIgnoringCacheData
 		   timeoutInterval:10.0]) {
     
-		consumer = aConsumer;
+		consumer = [aConsumer retain];
 		
 		// empty token for Unauthorized Request Token transaction
 		if (aToken == nil) {
