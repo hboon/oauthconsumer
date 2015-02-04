@@ -23,7 +23,7 @@ A million repetitions of "a"
 
 #include "sha1.h"
 
-void SHA1Transform(unsigned long state[5], unsigned char buffer[64]);
+void SHA1Transform(uint32_t state[5], unsigned char buffer[64]);
 
 #define rol(value, bits) (((value) << (bits)) | ((value) >> (32 - (bits))))
 
@@ -48,12 +48,12 @@ void SHA1Transform(unsigned long state[5], unsigned char buffer[64]);
 
 /* Hash a single 512-bit block. This is the core of the algorithm. */
 
-void SHA1Transform(unsigned long state[5], unsigned char buffer[64])
+void SHA1Transform(uint32_t state[5], unsigned char buffer[64])
 {
-unsigned long a, b, c, d, e;
+uint32_t a, b, c, d, e;
 typedef union {
     unsigned char c[64];
-    unsigned long l[16];
+    uint32_t l[16];
 } CHAR64LONG16;
 CHAR64LONG16* block;
 #ifdef SHA1HANDSOFF
@@ -141,7 +141,7 @@ unsigned int i, j;
 
 void SHA1Final(unsigned char digest[20], SHA1_CTX* context)
 {
-unsigned long i, j;
+uint32_t i, j;
 unsigned char finalcount[8];
 
     for (i = 0; i < 8; i++) {

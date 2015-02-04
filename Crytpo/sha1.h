@@ -1,9 +1,10 @@
+#include <stdint.h>
 
 // From http://www.mirrors.wiretapped.net/security/cryptography/hashes/sha1/sha1.c
 
 typedef struct {
-    unsigned long state[5];
-    unsigned long count[2];
+    uint32_t state[5];
+    uint32_t count[2];
     unsigned char buffer[64];
 } SHA1_CTX;
 
